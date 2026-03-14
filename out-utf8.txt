@@ -1,0 +1,59 @@
+﻿On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   .env.example
+	new file:   .gitignore
+	new file:   README.md
+	new file:   err-utf8.txt
+	new file:   err.txt
+	new file:   index.html
+	new file:   metadata.json
+	new file:   out.txt
+	new file:   out2.txt
+	new file:   package-lock.json
+	new file:   package.json
+	new file:   public/.keep
+	new file:   public/hero-bg.jpg
+	new file:   server.ts
+	new file:   src/App.tsx
+	new file:   src/components/Footer.tsx
+	new file:   src/components/Navbar.tsx
+	new file:   src/components/ProductCard.tsx
+	new file:   src/components/RequestModal.tsx
+	new file:   src/index.css
+	new file:   src/main.tsx
+	new file:   src/pages/About.tsx
+	new file:   src/pages/Admin/Dashboard.tsx
+	new file:   src/pages/Admin/Login.tsx
+	new file:   src/pages/Contact.tsx
+	new file:   src/pages/Home.tsx
+	new file:   src/pages/ProductDetail.tsx
+	new file:   src/pages/Products.tsx
+	new file:   src/server/middleware/auth.ts
+	new file:   src/server/middleware/upload.ts
+	new file:   src/server/routes/auth.ts
+	new file:   src/server/routes/products.ts
+	new file:   src/server/routes/requests.ts
+	new file:   src/server/routes/settings.ts
+	new file:   src/server/utils/cloudinary.ts
+	new file:   src/server/utils/notifications.ts
+	new file:   src/server/utils/seed.ts
+	new file:   src/server/utils/supabase.ts
+	new file:   src/store/useStore.ts
+	new file:   supabase_schema.sql
+	new file:   tsconfig.json
+	new file:   vite.config.ts
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   err.txt
+	modified:   out.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	out-utf8.txt
+
