@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
 
     // Fetch settings to get admin contact info
     const { data: settings } = await supabase.from('settings').select('*').limit(1).single();
-    const adminEmail = settings?.admin_email || 'admin@example.com';
+    const adminEmail = settings?.admin_email || process.env.EMAIL_USER || 'admin@example.com';
 
     // Send notifications asynchronously
     sendNotification({
