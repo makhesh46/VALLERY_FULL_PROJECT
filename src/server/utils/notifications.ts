@@ -1,5 +1,3 @@
-import nodemailer from 'nodemailer';
-
 export const sendNotification = async (requestData: any, adminEmail: string) => {
   const message = `
     New Product Request:
@@ -11,23 +9,39 @@ export const sendNotification = async (requestData: any, adminEmail: string) => 
     Message: ${requestData.message || 'N/A'}
   `;
 
-  // Send Email
+  // Send Email using Web3Forms API (Bypasses Render's SMTP block)
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+    const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+    
+    if (!accessKey) {
+      console.error('WEB3FORMS_ACCESS_KEY is missing in environment variables!');
+      return;
+    }
+
+    console.log(`Attempting to send email via Web3Forms to: ${adminEmail}`);
+
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
+      body: JSON.stringify({
+        access_key: accessKey,
+        subject: 'New Product Request from your website',
+        from_name: 'Vallery Notifications',
+        to: adminEmail,
+        message: message,
+      })
     });
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: adminEmail,
-      subject: 'New Product Request',
-      text: message,
-    });
-    console.log('Email sent successfully');
+    const result = await response.json();
+    
+    if (response.status === 200) {
+      console.log(`Email sent successfully via Web3Forms!`);
+    } else {
+      console.error('Web3Forms email sending failed:', result);
+    }
   } catch (error) {
     console.error('Email sending failed:', error);
   }
