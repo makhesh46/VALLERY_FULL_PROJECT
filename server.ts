@@ -14,32 +14,34 @@ import requestRoutes from "./src/server/routes/requests.js";
 import settingsRoutes from "./src/server/routes/settings.js";
 import { seedDatabase } from "./src/server/utils/seed.js";
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  // Middleware
-  app.use(cors());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  // Seed Supabase
-  try {
-    await seedDatabase();
-  } catch (error) {
-    console.error("Seed error:", error);
+// API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/requests", requestRoutes);
+app.use("/api/settings", settingsRoutes);
+
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+async function setupViteAndStart() {
+  // Seed Supabase (only in local/Render, skip on Vercel cold starts to save DB connections)
+  if (process.env.VERCEL !== "1") {
+    try {
+      await seedDatabase();
+    } catch (error) {
+      console.error("Seed error:", error);
+    }
   }
-
-  // API Routes
-  app.use("/api/auth", authRoutes);
-  app.use("/api/products", productRoutes);
-  app.use("/api/requests", requestRoutes);
-  app.use("/api/settings", settingsRoutes);
-
-  // Health check
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
-  });
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
@@ -51,14 +53,23 @@ async function startServer() {
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    app.get("*", (req, res) => {
+    
+    // Only serve index.html for non-API routes
+    app.get(/^(?!\/api).*/, (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  // Only listen to the port if we are NOT on Vercel
+  // Vercel manages the server automatically via the export below
+  if (process.env.VERCEL !== "1") {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
 }
 
-startServer();
+setupViteAndStart();
+
+// Export the app so Vercel's Serverless Functions can use it
+export default app;
